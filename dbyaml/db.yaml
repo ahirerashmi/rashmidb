@@ -1,0 +1,41 @@
+---
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  name: "votingapprashmi"
+  namespace: "default"
+  labels:
+    app: "votingapprashmi"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: "votingapprashmi"
+  template:
+    metadata:
+      labels:
+        app: "votingapprashmi"
+    spec:
+      containers:
+      - name: "rashmidb-sha256-1"
+        image: "gcr.io/charged-ground-326209/github.com/ahirerashmi/rashmidb@sha256:38594059200ca6c7c25fdc846b1764491b27343a013c4f4fef576b54bf6b953f"
+---
+apiVersion: "autoscaling/v2beta1"
+kind: "HorizontalPodAutoscaler"
+metadata:
+  name: "votingapprashmi-hpa-bjjf"
+  namespace: "default"
+  labels:
+    app: "votingapprashmi"
+spec:
+  scaleTargetRef:
+    kind: "Deployment"
+    name: "votingapprashmi"
+    apiVersion: "apps/v1"
+  minReplicas: 1
+  maxReplicas: 1
+  metrics:
+  - type: "Resource"
+    resource:
+      name: "cpu"
+      targetAverageUtilization: 80
